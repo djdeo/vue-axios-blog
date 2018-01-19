@@ -22,6 +22,6 @@ npm run build
 
 ## To do
 
-- [ ] Add clear field button
+- [x] Add clear field button
 - [ ] Other UI work
 - [ ] Auto Pagination

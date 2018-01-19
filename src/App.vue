@@ -18,12 +18,13 @@
         </div>
         <br>
         <div v-if="!submitted">
-          <input type="submit" @click.prevent="submitPost()" class="btn btn-primary btn-block">  
+          <input type="submit" @click.prevent="submitPost()" class="btn btn-primary btn-lg">  
+          <input type="button" @click.prevent="clearField()" class="btn btn-muted btn-lg" value="Clear">  
         </div>
         <div v-if="submitted">
           
-          <input type="button" @click.prevent="updatePost(blog.id)" class="btn btn-warning btn-block" value="Update Post">  
-          <input type="button" @click.prevent="cancelEdit()" class="btn btn-muted btn-block" value="Cancel Edit">  
+          <input type="button" @click.prevent="updatePost(blog.id)" class="btn btn-warning btn-lg" value="Update Post">  
+          <input type="button" @click.prevent="cancelEdit()" class="btn btn-muted btn-lg" value="Cancel Edit">  
         </div>
         <br>
           <input type="hidden" class="form-control" placeholder="ID" v-model="blog.id">
