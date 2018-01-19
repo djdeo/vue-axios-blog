@@ -1,6 +1,8 @@
 # vue-axios-blog
 
-> a vue axios:get, post, pub, delete blog
+ a vue axios:get, post, pub, delete blog
+ 
+ use [json-server](https://github.com/typicode/json-server) as the data base
 
 ## Build Setup
 
@@ -22,3 +24,4 @@ npm run build
 
 - [ ] Add clear field button
 - [ ] Other UI work
+- [ ] Auto Pagination
