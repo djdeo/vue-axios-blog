@@ -10,11 +10,11 @@
         <h1>Add New Article</h1>
         <p class="lead">What's going on there</p>
         <div class="form-group">
-          <input type="text" v-model="blog.title" class="form-control" placeholder="Post Title">
+          <input type="text" v-model.lazy="blog.title" class="form-control" placeholder="Post Title">
         </div>
 
         <div class="form-group">
-          <textarea class="form-control" v-model="blog.body" placeholder="Post Body"></textarea>
+          <textarea class="form-control" v-model.lazy="blog.body" placeholder="Post Body"></textarea>
         </div>
         <br>
         <div v-if="!submitted">
@@ -32,12 +32,12 @@
        <br>
 
         <div id="posts">
+          <h2>Blog list</h2>
           <div class="row">
             <div class="col-md-4" v-for="post in posts" :key="post.id">
-              <div class="card mb-3">
+              <div class="card text-white mb-3" :class="bgc[Math.floor(Math.random()*5)]">
+                <img src="/src/assets/640x480.png" style="width: 100%;" alt="img alt">
                 <div class="card-body">
-                  <img src="/src/assets/640x480.png" style="width: 100%;" alt="img alt">
-                  <br>
                   <h4 class="card-title"> {{post.title}} </h4>
                   <p class="card-text"> {{post.body}} </p>
                   <a href="#" class="edit card-link" :data-id="post.id">
@@ -59,93 +59,97 @@
 </template>
 
 <script>
-const axios = require('axios')
+const axios = require("axios");
 
-  export default {
-    data() {
-      return {
-        posts: [],
-        blog: {
-          title:'',
-          body:'',
-          id:''
-        },
-        submitted: false
-      }
-    },
-    created() {
-      this.getPost()
-    },
-    methods: {
-      getPost() {
-        axios.get('http://localhost:3000/posts')
-        .then(data => this.posts = data.data)
-        .catch(error => console.log(error))
+export default {
+  data() {
+    return {
+      posts: [],
+      blog: {
+        title: "",
+        body: "",
+        id: ""
       },
-      
-      submitPost () {
-        if(this.blog.title === '' || this.blog.body === ''){
-          alert('Please fill all the forms')
-        }else{
-          const postData = {
+      bgc: ["bg-info", "bg-primary", "bg-danger", "bg-warning", "bg-success"],
+      submitted: false
+    };
+  },
+  created() {
+    this.getPost();
+  },
+  methods: {
+    getPost() {
+      axios
+        .get("http://localhost:3000/posts")
+        .then(data => (this.posts = data.data))
+        .catch(error => console.log(error));
+    },
+
+    submitPost() {
+      if (this.blog.title === "" || this.blog.body === "") {
+        alert("Please fill all the forms");
+      } else {
+        const postData = {
           title: this.blog.title,
           body: this.blog.body,
-          id: this.blog.id  
-          }
-        axios.post('http://localhost:3000/posts', postData)
-          .then(response =>{
-            this.getPost()
-            this.clearField()
-            alert('New post added')
+          id: this.blog.id
+        };
+        axios
+          .post("http://localhost:3000/posts", postData)
+          .then(response => {
+            this.getPost();
+            this.clearField();
+            alert("New post added");
           })
-          .catch(error => console.log(error))
-        }
-      },
+          .catch(error => console.log(error));
+      }
+    },
 
-      deletePost (id) {
-        let confirmBox = confirm('Are you sure?')
-        
-        if(confirmBox) {
-          axios.delete(`http://localhost:3000/posts/${id}`)
+    deletePost(id) {
+      let confirmBox = confirm("Are you sure?");
+
+      if (confirmBox) {
+        axios
+          .delete(`http://localhost:3000/posts/${id}`)
           .then(data => this.getPost())
-          .catch(error => console.log(error))
-        }
-      },
+          .catch(error => console.log(error));
+      }
+    },
 
-      cancelEdit() {
-        this.submitted = false
-        this.clearField()
-      },
+    cancelEdit() {
+      this.submitted = false;
+      this.clearField();
+    },
 
-      clearField(){
-        this.blog.title = ''
-        this.blog.body = ''
-        this.blog.id = ''
-      },
+    clearField() {
+      this.blog.title = "";
+      this.blog.body = "";
+      this.blog.id = "";
+    },
 
-      editPost (id) {
-        axios.get(`http://localhost:3000/posts/${id}`)
-        .then(data => {
-          this.blog.title = data.data.title
-          this.blog.body = data.data.body
-          this.blog.id = data.data.id
-          this.submitted = true
-          })
-      },
-      
-      updatePost(id){
-        axios.put(`http://localhost:3000/posts/${id}`, {
-         title: this.blog.title,
-         body: this.blog.body,
-         id
-        }).then(data => {
-          this.getPost()
-          this.clearField()
-          alert('Post Updated')
-          this.submitted = false
+    editPost(id) {
+      axios.get(`http://localhost:3000/posts/${id}`).then(data => {
+        this.blog.title = data.data.title;
+        this.blog.body = data.data.body;
+        this.blog.id = data.data.id;
+        this.submitted = true;
+      });
+    },
+
+    updatePost(id) {
+      axios
+        .put(`http://localhost:3000/posts/${id}`, {
+          title: this.blog.title,
+          body: this.blog.body,
+          id
         })
-      }      
+        .then(data => {
+          this.getPost();
+          this.clearField();
+          alert("Post Updated");
+          this.submitted = false;
+        });
     }
   }
-
+};
 </script>
