@@ -32,18 +32,26 @@
        <br>
 
         <div id="posts">
-          <div class="card mb-3" v-for="post in posts" :key="post.id">
-            <div class="card-body">
-              <h4 class="card-title"> {{post.title}} </h4>
-              <p class="card-text"> {{post.body}} </p>
-              <a href="#" class="edit card-link" :data-id="post.id">
-                <button class="btn btn-warning btn-sm" @click.prevent="editPost(post.id)">Edit</button>
-              </a>
-              <a href="#" class="delete card-link" :data-id="post.id">
-                 <button class="btn btn-danger btn-sm" @click.prevent="deletePost(post.id)">Delete</button>
-              </a>
+          <div class="row">
+            <div class="col-md-4" v-for="post in posts" :key="post.id">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <img src="/src/assets/640x480.png" style="width: 100%;" alt="img alt">
+                  <br>
+                  <h4 class="card-title"> {{post.title}} </h4>
+                  <p class="card-text"> {{post.body}} </p>
+                  <a href="#" class="edit card-link" :data-id="post.id">
+                    <button class="btn btn-warning btn-sm" @click.prevent="editPost(post.id)">Edit</button>
+                  </a>
+                  <a href="#" class="delete card-link" :data-id="post.id">
+                    <button class="btn btn-danger btn-sm" @click.prevent="deletePost(post.id)">Delete</button>
+                  </a>
+                </div>
+               </div>
+
             </div>
           </div>
+          
         </div>
       </div>
     </div>
