@@ -5,59 +5,60 @@
         <a href="/" class="navbar-brand text-white">Server Articles</a>
       </div>
     </nav>
-    <div class="container postsContainer">
-      <div class="card card-body card-form">
-        <h1>Add New Article</h1>
-        <p class="lead">What's going on there</p>
-        <div class="form-group">
-          <input type="text" v-model.lazy="blog.title" class="form-control" placeholder="Post Title">
-        </div>
-
-        <div class="form-group">
-          <textarea class="form-control" v-model.lazy="blog.body" placeholder="Post Body"></textarea>
-        </div>
-        <br>
-        <div v-if="!submitted">
-          <input type="submit" @click.prevent="submitPost()" class="btn btn-primary btn-lg">  
-          <input type="button" @click.prevent="clearField()" class="btn btn-muted btn-lg" value="Clear">  
-        </div>
-        <div v-if="submitted">
-          
-          <input type="button" @click.prevent="updatePost(blog.id)" class="btn btn-warning btn-lg" value="Update Post">  
-          <input type="button" @click.prevent="cancelEdit()" class="btn btn-muted btn-lg" value="Cancel Edit">  
-        </div>
-        <br>
-          <input type="hidden" class="form-control" placeholder="ID" v-model="blog.id">
-        
-       <br>
-
-        <div id="posts">
-          <h2>Blog list</h2>
-          <div class="row">
-            <div class="col-md-4" v-for="post in posts" :key="post.id">
-              <div class="card text-white mb-3" :class="bgc[Math.floor(Math.random()*5)]">
-                <img src="/src/assets/640x480.png" style="width: 100%;" alt="img alt">
-                <div class="card-body">
-                  <h4 class="card-title"> {{post.title}} </h4>
-                  <p class="card-text"> {{post.body}} </p>
-                  <a href="#" class="edit card-link" :data-id="post.id">
-                    <button class="btn btn-warning btn-sm" @click.prevent="editPost(post.id)">Edit</button>
-                  </a>
-                  <a href="#" class="delete card-link" :data-id="post.id">
-                    <button class="btn btn-danger btn-sm" @click.prevent="deletePost(post.id)">Delete</button>
-                  </a>
+    <div class="container">
+      <div class="row">
+        <div class="right col-md-9">
+          <div id="posts">
+            <h2 class="page-header">Blog list</h2>
+            <div class="row">
+              <div class="col-md-4" v-for="post in posts" :key="post.id">
+                <div class="card mb-3">
+                  <img src="/src/assets/640x480.png" style="width: 100%;" alt="img alt">
+                  <div class="card-body">
+                    <h4 class="card-title"> {{post.title}} </h4>
+                    <p class="card-text"> {{post.body}} </p>
+                    <a href="#" class="edit card-link" :data-id="post.id">
+                      <button class="btn btn-warning btn-sm" @click.prevent="editPost(post.id)">Edit</button>
+                    </a>
+                    <a href="#" class="delete card-link" :data-id="post.id">
+                      <button class="btn btn-danger btn-sm" @click.prevent="deletePost(post.id)">Delete</button>
+                    </a>
+                  </div>
                 </div>
-               </div>
-
+              </div>
             </div>
           </div>
-          
+        </div>
+        <div class="col-md-3 mt-3">
+          <h1>Add New Article</h1>
+          <p class="lead">What's going on there</p>
+          <div class="form-group">
+            <input type="text" v-model.lazy="blog.title" class="form-control" placeholder="Post Title">
+          </div>
+          <div class="form-group">
+            <textarea class="form-control" v-model.lazy="blog.body" placeholder="Post Body"></textarea>
+          </div>
+          <br>
+          <div v-if="!submitted">
+            <input type="submit" @click.prevent="submitPost()" class="btn btn-primary btn-block">
+            <!-- <input type="button" @click.prevent="clearField()" class="btn btn-muted btn-block" value="Clear"> -->
+          </div>
+          <div v-else>
+            <input type="button" @click.prevent="updatePost(blog.id)" class="btn btn-warning btn-lg" value="Update">
+            <input type="button" @click.prevent="cancelEdit()" class="btn btn-muted btn-lg" value="Cancel">
+          </div>
+          <br>
+          <!-- alert message -->
+          <div v-show="active">
+            <div class="alert" :class="alertMsg" id="msg">
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  
 </template>
-
 <script>
 const axios = require("axios");
 
@@ -70,8 +71,9 @@ export default {
         body: "",
         id: ""
       },
-      bgc: ["bg-info", "bg-primary", "bg-danger", "bg-warning", "bg-success"],
-      submitted: false
+      alertMsg: "",
+      submitted: false,
+      active: false
     };
   },
   created() {
@@ -87,7 +89,7 @@ export default {
 
     submitPost() {
       if (this.blog.title === "" || this.blog.body === "") {
-        alert("Please fill all the forms");
+        this.alertInfo("alert-warning", "Please Fill in all the fields");
       } else {
         const postData = {
           title: this.blog.title,
@@ -99,7 +101,7 @@ export default {
           .then(response => {
             this.getPost();
             this.clearField();
-            alert("New post added");
+            this.alertInfo("alert-success", "Post Added");
           })
           .catch(error => console.log(error));
       }
@@ -127,6 +129,12 @@ export default {
       this.blog.id = "";
     },
 
+    alertInfo(cls, msg) {
+      this.active = true;
+      this.alertMsg = cls;
+      document.getElementById("msg").innerHTML = msg;
+      setTimeout(() => (this.active = false), 2000);
+    },
     editPost(id) {
       axios.get(`http://localhost:3000/posts/${id}`).then(data => {
         this.blog.title = data.data.title;
@@ -146,10 +154,15 @@ export default {
         .then(data => {
           this.getPost();
           this.clearField();
-          alert("Post Updated");
+          this.alertInfo("alert-success", "Post Updated");
           this.submitted = false;
         });
     }
   }
 };
 </script>
+<style>
+.right {
+  border-right: 1px solid #ccc;
+}
+</style>
