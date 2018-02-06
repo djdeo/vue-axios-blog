@@ -50,7 +50,8 @@
           <br>
           <!-- alert message -->
           <div v-show="active">
-            <div class="alert" :class="alertMsg" id="msg">
+            <div class="alert" :class="alertMsg">
+              {{msg}}
             </div>
           </div>
         </div>
@@ -72,6 +73,7 @@ export default {
         id: ""
       },
       alertMsg: "",
+      msg:"",
       submitted: false,
       active: false
     };
@@ -132,7 +134,7 @@ export default {
     alertInfo(cls, msg) {
       this.active = true;
       this.alertMsg = cls;
-      document.getElementById("msg").innerHTML = msg;
+      this.msg = msg;
       setTimeout(() => (this.active = false), 2000);
     },
     editPost(id) {
